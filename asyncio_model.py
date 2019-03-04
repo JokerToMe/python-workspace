@@ -16,16 +16,15 @@
 
 import asyncio
 
-@asyncio.coroutine
-def wget(host):
+async def wget(host):
     print('wget %s...' % host)
     conn = asyncio.open_connection(host,80)
-    reader, writer = yield from conn
+    reader, writer = await conn
     header = 'GET / HTTP/1.0\r\nHost: %s\r\n\r\n' % host
     writer.write(header.encode('utf-8'))
-    yield from writer.drain()
+    await writer.drain()
     while True:
-        line = yield from reader.readline()
+        line = await reader.readline()
         if line == b'\r\n':
             break
         print('%s header > %s' % (host, line.decode('utf-8').rstrip()))
